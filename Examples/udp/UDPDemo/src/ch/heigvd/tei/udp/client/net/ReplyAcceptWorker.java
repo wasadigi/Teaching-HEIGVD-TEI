@@ -20,8 +20,13 @@ public class ReplyAcceptWorker implements Runnable {
 
 	private DatagramSocket socket;
 	private ReplyListener callbackListener;
+	
+	private String serverAddress;
+	private int serverPort;
 
-	public ReplyAcceptWorker(ReplyListener listener) {
+	public ReplyAcceptWorker(ReplyListener listener, String serverAddress, int serverPort) {
+		this.serverAddress = serverAddress;
+		this.serverPort = serverPort;
 		try {
 			socket = new DatagramSocket();
 		} catch (SocketException ex) {

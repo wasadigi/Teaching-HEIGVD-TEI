@@ -2,10 +2,12 @@ package ch.heigvd.tei.udp.protocol;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
- *
+ * This class encapsulates a request, sent by a client to a server. Every request has a unique
+ * identification number, which is used by the client to keep associate replies to corresponding
+ * requests.
+ * 
  * @author oliechti
  */
 public class Request {
@@ -18,10 +20,8 @@ public class Request {
 	
 	private long requestId;
 
-	
-	public Request() {
-		
-		requestId = counter++; //UUID.randomUUID().getLeastSignificantBits();
+	public Request() {	
+		requestId = counter++;
 	}
 	
 	public Request(String command, Map<String, String> parameters) {
@@ -69,19 +69,11 @@ public class Request {
 		String[] tokens = data.split(Character.toString(Protocol.SEPARATOR));
 		this.command = tokens[0];
 		String rid = tokens[tokens.length-1];
-		analyze(rid);
 		this.requestId = Integer.parseInt(rid);
 		parameters.clear();
 		for (int i=1; i<tokens.length-1; i++) {
 			String[] pTokens = tokens[i].split("=");
 			parameters.put(pTokens[0], pTokens[1]);
-		}
-	}
-
-	private void analyze(String rid) {
-		System.out.println("length: " + rid.length());
-		for (int i=0; i<rid.length(); i++) {
-			System.out.println(">" + rid.charAt(i) + " " + (int)rid.charAt(i));
 		}
 	}
 

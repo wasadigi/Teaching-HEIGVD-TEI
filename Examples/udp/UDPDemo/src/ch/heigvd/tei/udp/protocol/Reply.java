@@ -10,13 +10,18 @@ public class Reply {
 	private String result;
 	private long requestId;
 
-	public Reply() {
+	
+	public Reply() {	
+	}
+	
+	public Reply(Request request) {
+		this.requestId = request.getRequestId();
 	}
 
-	public Reply(String statusCode, String result, long requestId) {
+	public Reply(Request request, String statusCode, String result) {
+		this(request);
 		this.statusCode = statusCode;
 		this.result = result;
-		this.requestId = requestId;
 	}
 
 	public String getResult() {
@@ -46,15 +51,7 @@ public class Reply {
 		this.statusCode = tokens[0];
 		this.result = tokens[1];
 		String rid = tokens[tokens.length - 1];
-		analyze(rid);
 		this.requestId = Long.parseLong(tokens[tokens.length - 1]);
-	}
-
-	private void analyze(String rid) {
-		System.out.println("length: " + rid.length());
-		for (int i = 0; i < rid.length(); i++) {
-			System.out.println(">" + rid.charAt(i) + " " + (int) rid.charAt(i));
-		}
 	}
 
 	@Override

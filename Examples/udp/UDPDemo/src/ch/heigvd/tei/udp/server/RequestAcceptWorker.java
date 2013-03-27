@@ -1,5 +1,7 @@
 package ch.heigvd.tei.udp.server;
 
+import ch.heigvd.tei.udp.command.CommandsRegistry;
+import ch.heigvd.tei.udp.command.ICommand;
 import ch.heigvd.tei.udp.protocol.Protocol;
 import ch.heigvd.tei.udp.protocol.Reply;
 import ch.heigvd.tei.udp.protocol.Request;
@@ -10,10 +12,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class implements the main loop for the "request-reply" phase of the application protocol. The
+ * server accepts datagram on a UDP port. For every request, it generates a reply and sends it back to
+ * the originating client.
+ * 
  * @author oliechti
  */
 public class RequestAcceptWorker implements Runnable {
+	
+	CommandsRegistry commandsRegistry = new CommandsRegistry();
 
 	@Override
 	public void run() {
@@ -31,7 +38,8 @@ public class RequestAcceptWorker implements Runnable {
 				request.unmarshal(new String(payload));
 				System.out.println("Request received " + request);
 
-				Reply reply = new Reply("200", "your result", request.getRequestId());
+				ICommand command = commandsRegistry.lookup(request.getCommand());
+				Reply reply = command.execute(request);
 				
 				byte[] data = reply.marshal().getBytes();
 				DatagramPacket replyPacket = new DatagramPacket(data, data.length);
